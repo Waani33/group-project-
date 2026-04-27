@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0c0906">
+  <title>MorningMind</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <div class="app">
+
+    <!-- DESKTOP SIDEBAR -->
+    <aside class="sidebar-desktop" id="sidebar-desktop">
+      <div class="sidebar-brand">☀ MorningMind</div>
+      <button class="sidebar-nav-btn active" id="snav-home" onclick="showTab('home')">🏠 Home</button>
+      <button class="sidebar-nav-btn" id="snav-schedule" onclick="showTab('schedule')">📅 Schedule</button>
+      <button class="sidebar-nav-btn" id="snav-weather" onclick="showTab('weather')">🌤 Weather</button>
+      <button class="sidebar-nav-btn" id="snav-calendar" onclick="showTab('calendar')">🗓 Calendar</button>
+      <button class="sidebar-nav-btn" id="snav-settings" onclick="showTab('settings')">⚙️ Settings</button>
+      <div class="sidebar-clock" id="sidebar-clock-val">9:41 AM</div>
+    </aside>
+
+    <!-- TOP BAR (mobile/tablet) -->
+    <div class="topbar" id="topbar">
+      <div class="brand">
+        <div class="brand-sun">☀</div>
+        <div class="brand-name">MorningMind</div>
+      </div>
+      <div class="topbar-clock" id="topbar-clock">9:41 AM</div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="content" style="display:flex;flex-direction:column;flex:1;">
+      <div style="flex:1;overflow-y:auto;" class="content">
+
+        <!-- ══ HOME ══ -->
+        <div class="screen active" id="s-home">
+          <div class="home-clock-card">
+            <div class="home-date" id="home-date">Monday, April 21</div>
+            <div class="home-clock" id="home-big-clock">9:41<span>AM</span></div>
+            <div class="home-greeting" id="home-greeting">Good morning — ready for today?</div>
+          </div>
+
+          <div class="home-weather-card" id="home-weather-card">
+            <div class="weather-emoji">⛅</div>
+            <div class="weather-main">
+              <div class="weather-temp-big">—°F</div>
+              <div class="weather-desc">Loading weather...</div>
+              <div class="weather-city">Ruston, LA</div>
+            </div>
+          </div>
+
+          <div class="home-times-card">
+            <div class="htime-item">
+              <div class="htime-dot dot-green"></div>
+              <div class="htime-label">Coffee</div>
+              <div class="htime-val empty" id="ht-coffee">Not set</div>
+            </div>
+            <div class="htime-divider"></div>
+            <div class="htime-item">
+              <div class="htime-dot dot-amber"></div>
+              <div class="htime-label">Alarm</div>
+              <div class="htime-val empty" id="ht-alarm">Not set</div>
+            </div>
+            <div class="htime-divider"></div>
+            <div class="htime-item">
+              <div class="htime-dot dot-blue"></div>
+              <div class="htime-label">Class</div>
+              <div class="htime-val empty" id="ht-event">Not set</div>
+            </div>
+          </div>
+
+          <div class="home-quote-card">
+            <div class="quote-mark">"</div>
+            <div class="quote-body" id="quote-text">Loading quote...</div>
+            <div class="quote-attr" id="quote-author">—</div>
+          </div>
+
+          <button class="btn btn-primary" onclick="showTab('schedule')">
+            Plan your morning →
+          </button>
+        </div>
+
+        <!-- ══ SCHEDULE ══ -->
+        <div class="screen" id="s-schedule">
+          <div class="page-title">Plan your <em>morning</em></div>
+          <div class="page-sub">Enter your schedule once, wake up on time every day.</div>
+
+          <div class="card">
+            <div class="card-title">Event details</div>
+            <label class="lbl">First event tomorrow</label>
+            <input class="field" type="text" id="ev-name" placeholder="e.g. CSC 101" oninput="updatePlanPreview()">
+
+            <label class="lbl">Event time</label>
+            <button class="clock-btn" onclick="openClock()">
+              🕐 <span id="clock-display">9:00 AM</span>
+            </button>
+
+            <div class="two-col">
+              <div>
+                <label class="lbl">Wake buffer</label>
+                <select class="field" id="ev-buffer" onchange="updatePlanPreview()">
+                  <option value="45">45 min before</option>
+                  <option value="60">1 hr before</option>
+                  <option value="75" selected>1 hr 15 min</option>
+                  <option value="90">1 hr 30 min</option>
+                </select>
+              </div>
+              <div>
+                <label class="lbl">Coffee offset</label>
+                <select class="field" id="ev-coffee" onchange="updatePlanPreview()">
+                  <option value="5">5 min before</option>
+                  <option value="10" selected>10 min before</option>
+                  <option value="15">15 min before</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="plan-preview" id="plan-preview">
+            <div class="plan-row">
+              <div class="plan-dot dot-green"></div>
+              <div class="plan-lbl">Coffee starts</div>
+              <div class="plan-val" id="prev-coffee">—</div>
+            </div>
+            <div class="plan-row">
+              <div class="plan-dot dot-amber"></div>
+              <div class="plan-lbl">Alarm fires</div>
+              <div class="plan-val" id="prev-alarm">—</div>
+            </div>
+            <div class="plan-row">
+              <div class="plan-dot dot-blue"></div>
+              <div class="plan-lbl">First event</div>
+              <div class="plan-val" id="prev-event">—</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Wake-up song</div>
+            <div class="song-list">
+              <div class="song-row selected" onclick="selectSong(this,'Levitating — Dua Lipa')">
+                <div class="song-radio"></div>
+                <div class="song-txt">
+                  <div class="sname">Levitating</div>
+                  <div class="sartist">Dua Lipa</div>
+                </div>
+                <div class="song-badge">✓ Selected</div>
+              </div>
+              <div class="song-row" onclick="selectSong(this,'Good as Hell — Lizzo')">
+                <div class="song-radio"></div>
+                <div class="song-txt">
+                  <div class="sname">Good as Hell</div>
+                  <div class="sartist">Lizzo</div>
+                </div>
+                <div class="song-badge">✓ Selected</div>
+              </div>
+              <div class="song-row" onclick="selectSong(this,'Blinding Lights — The Weeknd')">
+                <div class="song-radio"></div>
+                <div class="song-txt">
+                  <div class="sname">Blinding Lights</div>
+                  <div class="sartist">The Weeknd</div>
+                </div>
+                <div class="song-badge">✓ Selected</div>
+              </div>
+              <div class="song-row" onclick="selectSong(this,'As It Was — Harry Styles')">
+                <div class="song-radio"></div>
+                <div class="song-txt">
+                  <div class="sname">As It Was</div>
+                  <div class="sartist">Harry Styles</div>
+                </div>
+                <div class="song-badge">✓ Selected</div>
+              </div>
+              <div class="song-row" onclick="selectSong(this,'Espresso — Sabrina Carpenter')">
+                <div class="song-radio"></div>
+                <div class="song-txt">
+                  <div class="sname">Espresso</div>
+                  <div class="sartist">Sabrina Carpenter</div>
+                </div>
+                <div class="song-badge">✓ Selected</div>
+              </div>
+            </div>
+
+            <div class="upload-zone" id="upload-zone" onclick="document.getElementById('mp3-input').click()">
+              <div class="upload-icon">🎵</div>
+              <div class="upload-text">Upload your own MP3</div>
+              <div class="upload-sub">Tap to choose from your device</div>
+            </div>
+            <input type="file" id="mp3-input" accept="audio/mp3,audio/*" style="display:none"
+              onchange="handleUpload(event)">
+          </div>
+
+          <button class="btn btn-primary" onclick="confirmPlan()">Confirm morning plan →</button>
+          <button class="btn btn-secondary" onclick="showTab('alarm')">Preview alarm</button>
+        </div>
+
+        <!-- ══ WEATHER ══ -->
+        <div class="screen" id="s-weather">
+          <div class="page-title">Today's <em>weather</em></div>
+          <div class="page-sub">Live forecast for Ruston, Louisiana.</div>
+
+          <div class="weather-hero" id="weather-hero">
+            <div class="wh-city">Ruston, Louisiana</div>
+            <div class="wh-icon">⛅</div>
+            <div class="wh-temp">—<sup>°F</sup></div>
+            <div class="wh-desc">Loading...</div>
+          </div>
+
+          <div class="wh-stats-row" id="weather-stats-row">
+            <div class="wh-stat-card">
+              <div class="wh-stat-icon">🌡</div>
+              <div class="wh-stat-val">—</div>
+              <div class="wh-stat-lbl">High</div>
+            </div>
+            <div class="wh-stat-card">
+              <div class="wh-stat-icon">🌬</div>
+              <div class="wh-stat-val">—</div>
+              <div class="wh-stat-lbl">Low</div>
+            </div>
+            <div class="wh-stat-card">
+              <div class="wh-stat-icon">💧</div>
+              <div class="wh-stat-val">—</div>
+              <div class="wh-stat-lbl">Humidity</div>
+            </div>
+          </div>
+
+          <div class="card-title" style="margin-bottom:8px;">7-Day Forecast</div>
+          <div class="forecast-list" id="forecast-list">
+            <div class="forecast-row">
+              <div class="forecast-day">—</div>
+              <div class="forecast-icon">⛅</div>
+              <div class="forecast-desc">Loading...</div>
+              <div class="forecast-temp">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ ALARM (hidden tab, shown from schedule) ══ -->
+        <div class="screen" id="s-alarm">
+          <div class="alarm-screen-wrap">
+            <div class="alarm-label">Alarm ringing</div>
+            <div class="alarm-song" id="alarm-song-label">Levitating — Dua Lipa</div>
+            <div class="ring-container">
+              <svg class="ring-svg" viewBox="0 0 200 200">
+                <circle class="ring-track" cx="100" cy="100" r="85" />
+                <circle class="ring-prog" id="ring-prog" cx="100" cy="100" r="85" />
+              </svg>
+              <div class="ring-center">
+                <div class="ring-pct" id="ring-pct">0%</div>
+                <div class="ring-status" id="ring-status">starting</div>
+              </div>
+            </div>
+            <div class="vol-bars" id="vol-bars">
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <div class="alarm-actions">
+              <button class="btn btn-danger" onclick="dismissAlarm(false)">Dismiss</button>
+              <button class="btn btn-secondary" onclick="dismissAlarm(true)">Snooze</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ SUMMARY ══ -->
+        <div class="screen" id="s-summary">
+          <div class="page-title" id="sum-title">Great <em>start.</em></div>
+          <div class="page-sub">Coffee is brewing. You've got this.</div>
+          <div class="spacer"></div>
+          <div id="sum-note" class="info-green">No snooze today — keep it up!</div>
+          <div class="spacer"></div>
+          <button class="btn btn-primary" onclick="showTab('home')">Back to home →</button>
+          <button class="btn btn-secondary" onclick="showTab('schedule')">Edit tomorrow's plan</button>
+        </div>
+
+        <!-- ══ CALENDAR ══ -->
+        <div class="screen" id="s-calendar">
+          <div class="page-title">Your <em>calendar</em></div>
+          <div class="page-sub">Track tasks and events for each day.</div>
+
+          <div class="card">
+            <div class="cal-month">
+              <button class="cal-nav" onclick="prevMonth()">‹</button>
+              <div class="cal-month-label" id="cal-month-label">April 2026</div>
+              <button class="cal-nav" onclick="nextMonth()">›</button>
+            </div>
+            <div class="cal-grid">
+              <div class="cal-dow">Sun</div>
+              <div class="cal-dow">Mon</div>
+              <div class="cal-dow">Tue</div>
+              <div class="cal-dow">Wed</div>
+              <div class="cal-dow">Thu</div>
+              <div class="cal-dow">Fri</div>
+              <div class="cal-dow">Sat</div>
+            </div>
+            <div class="cal-grid" id="cal-grid"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-title" id="task-day-label">Tasks for selected day</div>
+            <div class="task-input-row">
+              <input class="field" type="text" id="task-input" placeholder="Add a task...">
+              <button class="btn btn-primary btn-sm" onclick="addTask()">Add</button>
+            </div>
+            <div class="task-list" id="task-list">
+              <div class="empty-state">
+                <div class="empty-icon">📋</div>No tasks yet. Add one above!
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ SETTINGS ══ -->
+        <div class="screen" id="s-settings">
+          <div class="page-title">Settings &amp; <em>themes</em></div>
+          <div class="page-sub">Make MorningMind yours.</div>
+
+          <div class="settings-section">
+            <div class="settings-lbl">App theme</div>
+            <div class="theme-grid">
+              <div class="theme-tile active" onclick="setTheme('',this)">
+                <div class="theme-swatch" style="background:linear-gradient(135deg,#0c0906,#c8844a)"></div>
+                <div class="theme-name">Espresso</div>
+              </div>
+              <div class="theme-tile" onclick="setTheme('purple',this)">
+                <div class="theme-swatch" style="background:linear-gradient(135deg,#0a0814,#9060e0)"></div>
+                <div class="theme-name">Purple</div>
+              </div>
+              <div class="theme-tile" onclick="setTheme('pink',this)">
+                <div class="theme-swatch" style="background:linear-gradient(135deg,#120808,#d06080)"></div>
+                <div class="theme-name">Rose</div>
+              </div>
+              <div class="theme-tile" onclick="setTheme('brown',this)">
+                <div class="theme-swatch" style="background:linear-gradient(135deg,#0e0a06,#b87838)"></div>
+                <div class="theme-name">Cocoa</div>
+              </div>
+              <div class="theme-tile" onclick="setTheme('nightsky',this)">
+                <div class="theme-swatch" style="background:linear-gradient(135deg,#04060e,#6888e8)"></div>
+                <div class="theme-name">Night Sky</div>
+              </div>
+              <div class="theme-tile" onclick="setTheme('forest',this)">
+                <div class="theme-swatch" style="background:linear-gradient(135deg,#060c06,#70c848)"></div>
+                <div class="theme-name">Forest</div>
+              </div>
+              <div class="theme-tile" onclick="setTheme('light',this)">
+                <div class="theme-swatch" style="background:linear-gradient(135deg,#f5f0e8,#a05e20)"></div>
+                <div class="theme-name">Light</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <div class="settings-lbl">About</div>
+            <div class="settings-card">
+              <div class="settings-row"><span class="settings-row-label">Project</span><span
+                  class="settings-row-val">MorningMind</span></div>
+              <div class="settings-row"><span class="settings-row-label">Version</span><span
+                  class="settings-row-val">2.0.0</span></div>
+              <div class="settings-row"><span class="settings-row-label">Platform</span><span
+                  class="settings-row-val">Raspberry Pi + Web</span></div>
+              <div class="settings-row"><span class="settings-row-label">University</span><span
+                  class="settings-row-val">Louisiana Tech · CSC 132</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- content inner -->
+
+      <!-- BOTTOM NAV -->
+      <nav class="bottomnav">
+        <button class="nav-btn active" id="nav-home" onclick="showTab('home')">
+          <div class="nav-icon">🏠</div>
+          <div class="nav-label">Home</div>
+        </button>
+        <button class="nav-btn" id="nav-schedule" onclick="showTab('schedule')">
+          <div class="nav-icon">📅</div>
+          <div class="nav-label">Schedule</div>
+        </button>
+        <button class="nav-btn" id="nav-weather" onclick="showTab('weather')">
+          <div class="nav-icon">🌤</div>
+          <div class="nav-label">Weather</div>
+        </button>
+        <button class="nav-btn" id="nav-calendar" onclick="showTab('calendar')">
+          <div class="nav-icon">🗓</div>
+          <div class="nav-label">Calendar</div>
+        </button>
+        <button class="nav-btn" id="nav-settings" onclick="showTab('settings')">
+          <div class="nav-icon">⚙️</div>
+          <div class="nav-label">Settings</div>
+        </button>
+      </nav>
+    </div>
+  </div>
+
+  <!-- CLOCK MODAL -->
+  <div class="modal-bg" id="clock-modal" onclick="closeClock(event)">
+    <div class="modal-box">
+      <div class="modal-title">Set event time</div>
+      <div class="clock-face-display" id="cm-display">9:00<span class="ampm">AM</span></div>
+      <div class="clock-controls">
+        <div class="ctrl-group">
+          <div class="ctrl-lbl">Hour</div>
+          <div class="ctrl-row">
+            <button class="ctrl-btn" onclick="adjH(-1)">−</button>
+            <div class="ctrl-val" id="cm-h">9</div>
+            <button class="ctrl-btn" onclick="adjH(1)">+</button>
+          </div>
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-lbl">Minute</div>
+          <div class="ctrl-row">
+            <button class="ctrl-btn" onclick="adjM(-15)">−</button>
+            <div class="ctrl-val" id="cm-m">00</div>
+            <button class="ctrl-btn" onclick="adjM(15)">+</button>
+          </div>
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-lbl">AM / PM</div>
+          <div class="ctrl-row">
+            <button class="ampm-toggle" onclick="togAP()" id="cm-ap">AM</button>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="confirmClock()">Confirm time</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
