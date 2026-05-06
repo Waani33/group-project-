@@ -8,59 +8,45 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#0c0906">
   <title>MorningMind</title>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap"
-    rel="stylesheet">
   <link rel="manifest" href="manifest.json">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,600;1,700&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-
   <div class="app">
 
     <!-- DESKTOP SIDEBAR -->
     <aside class="sidebar-desktop" id="sidebar-desktop">
-      <div class="sidebar-brand">☀ MorningMind</div>
+      <div class="sidebar-brand"><span class="brand-icon">☀</span><span class="brand-text">MorningMind</span></div>
       <button class="sidebar-nav-btn active" id="snav-home" onclick="showTab('home')">🏠 Home</button>
       <button class="sidebar-nav-btn" id="snav-schedule" onclick="showTab('schedule')">📅 Schedule</button>
       <button class="sidebar-nav-btn" id="snav-weather" onclick="showTab('weather')">🌤 Weather</button>
       <button class="sidebar-nav-btn" id="snav-calendar" onclick="showTab('calendar')">🗓 Calendar</button>
       <button class="sidebar-nav-btn" id="snav-settings" onclick="showTab('settings')">⚙️ Settings</button>
-      <div class="sidebar-clock" id="sidebar-clock-val">9:41 AM</div>
+      <div class="sidebar-time" id="sidebar-clock-val">9:41 AM</div>
     </aside>
 
-    <!-- TOP BAR (mobile/tablet) -->
+    <!-- TOP BAR -->
     <div class="topbar" id="topbar">
-      <div class="brand">
-        <div class="brand-sun">☀</div>
-        <div class="brand-name">MorningMind</div>
-      </div>
+      <div class="brand"><span class="brand-icon">☀</span><span class="brand-text">MorningMind</span></div>
       <div class="topbar-clock" id="topbar-clock">9:41 AM</div>
     </div>
 
-    <!-- MAIN CONTENT -->
-    <div class="content" style="display:flex;flex-direction:column;flex:1;">
-      <div style="flex:1;overflow-y:auto;" class="content">
+    <div class="content">
+      <div class="content-scroll">
 
-        <!-- ══ HOME ══ -->
+        <!-- HOME -->
         <div class="screen active" id="s-home">
-          <div class="home-clock-card">
-            <div class="home-date" id="home-date">Monday, April 21</div>
-            <div class="home-clock" id="home-big-clock">9:41<span>AM</span></div>
-            <div class="home-greeting" id="home-greeting">Good morning — ready for today?</div>
+          <div class="home-hero">
+            <div class="home-date" id="home-date">Saturday, May 4</div>
+            <div class="home-clock" id="home-big-clock">9:41<span class="home-ampm">AM</span></div>
+            <div class="home-greeting-pill" id="home-greeting">Good morning!!</div>
           </div>
 
-          <div class="home-weather-card" id="home-weather-card">
-            <div class="weather-emoji">⛅</div>
-            <div class="weather-main">
-              <div class="weather-temp-big">—°F</div>
-              <div class="weather-desc">Loading weather...</div>
-              <div class="weather-city">Ruston, LA</div>
-            </div>
-          </div>
-
-          <div class="home-times-card">
+          <div class="home-plan-card">
             <div class="htime-item">
               <div class="htime-dot dot-green"></div>
               <div class="htime-label">Coffee</div>
@@ -75,180 +61,191 @@
             <div class="htime-divider"></div>
             <div class="htime-item">
               <div class="htime-dot dot-blue"></div>
-              <div class="htime-label">Class</div>
+              <div class="htime-label">Event</div>
               <div class="htime-val empty" id="ht-event">Not set</div>
             </div>
           </div>
 
-          <div class="home-quote-card">
-            <div class="quote-mark">"</div>
-            <div class="quote-body" id="quote-text">Loading quote...</div>
-            <div class="quote-attr" id="quote-author">—</div>
+          <div class="home-weather-card" id="home-weather-card">
+            <div class="weather-emoji" id="wx-emoji-home">⛅</div>
+            <div class="weather-main">
+              <div class="weather-temp-big" id="wx-temp-home">—°F</div>
+              <div class="weather-desc" id="wx-desc-home">Loading weather...</div>
+              <div class="weather-city" id="wx-city-home">Ruston, LA</div>
+            </div>
+            <button class="wx-loc-btn" onclick="detectLocation()" title="Use my location">📍</button>
           </div>
 
-          <button class="btn btn-primary" onclick="showTab('schedule')">
-            Plan your morning →
-          </button>
+          <div class="home-quote-card">
+            <div class="quote-mark">"</div>
+            <div class="quote-body" id="quote-text">Loading...</div>
+            <div class="quote-footer">
+              <div class="quote-attr" id="quote-author">—</div>
+              <button class="quote-refresh" onclick="loadQuote()">↻</button>
+            </div>
+          </div>
+
+          <button class="btn btn-primary" onclick="showTab('schedule')">Plan your morning →</button>
         </div>
 
-        <!-- ══ SCHEDULE ══ -->
+        <!-- SCHEDULE -->
         <div class="screen" id="s-schedule">
           <div class="page-title">Plan your <em>morning</em></div>
-          <div class="page-sub">Enter your schedule once, wake up on time every day.</div>
+          <div class="page-sub">Set it once. Wake up right, every time.</div>
 
           <div class="card">
-            <div class="card-title">Event details</div>
-            <label class="lbl">First event tomorrow</label>
-            <input class="field" type="text" id="ev-name" placeholder="e.g. CSC 101" oninput="updatePlanPreview()">
-
+            <div class="card-title">📌 Event Details</div>
+            <label class="lbl">Event or class name</label>
+            <input class="field" type="text" id="ev-name" placeholder="e.g. Coffee with Sarah"
+              oninput="updatePlanPreview()">
             <label class="lbl">Event time</label>
-            <button class="clock-btn" onclick="openClock()">
-              🕐 <span id="clock-display">9:00 AM</span>
-            </button>
+            <button class="clock-btn" onclick="openClock()">🕐 <span id="clock-display">9:00 AM</span></button>
+          </div>
 
-            <div class="two-col">
-              <div>
-                <label class="lbl">Wake buffer</label>
-                <select class="field" id="ev-buffer" onchange="updatePlanPreview()">
-                  <option value="45">45 min before</option>
-                  <option value="60">1 hr before</option>
-                  <option value="75" selected>1 hr 15 min</option>
-                  <option value="90">1 hr 30 min</option>
-                </select>
-              </div>
-              <div>
-                <label class="lbl">Coffee offset</label>
-                <select class="field" id="ev-coffee" onchange="updatePlanPreview()">
-                  <option value="5">5 min before</option>
-                  <option value="10" selected>10 min before</option>
-                  <option value="15">15 min before</option>
-                </select>
+          <div class="card">
+            <div class="card-title">⏰ Wake Settings</div>
+            <label class="lbl">Wake buffer — minutes before your event</label>
+            <div class="input-with-label">
+              <input class="field field-num" type="number" id="ev-buffer" value="45" min="1" max="480"
+                oninput="updateBuffer()">
+              <span class="field-unit" id="buf-label">min before</span>
+            </div>
+            <div class="no-coffee-row">
+              <label class="lbl" style="margin:0">Coffee machine</label>
+              <button class="no-coffee-btn" id="no-coffee-btn" onclick="toggleNoCoffee()">☕ Coffee on</button>
+            </div>
+            <div id="coffee-offset-row">
+              <label class="lbl">Start brewing before alarm</label>
+              <div class="input-with-label">
+                <input class="field field-num" type="number" id="ev-coffee" value="10" min="1" max="120"
+                  oninput="updateCoffeeOffset()">
+                <span class="field-unit">min before alarm</span>
               </div>
             </div>
           </div>
 
-          <div class="plan-preview" id="plan-preview">
+          <div class="plan-preview">
             <div class="plan-row">
               <div class="plan-dot dot-green"></div>
-              <div class="plan-lbl">Coffee starts</div>
+              <div class="plan-lbl">☕ Coffee starts</div>
               <div class="plan-val" id="prev-coffee">—</div>
             </div>
             <div class="plan-row">
               <div class="plan-dot dot-amber"></div>
-              <div class="plan-lbl">Alarm fires</div>
+              <div class="plan-lbl">⏰ Alarm fires</div>
               <div class="plan-val" id="prev-alarm">—</div>
             </div>
             <div class="plan-row">
               <div class="plan-dot dot-blue"></div>
-              <div class="plan-lbl">First event</div>
+              <div class="plan-lbl">📍 First event</div>
               <div class="plan-val" id="prev-event">—</div>
             </div>
           </div>
 
           <div class="card">
-            <div class="card-title">Wake-up song</div>
-            <div class="song-list">
-              <div class="song-row selected" onclick="selectSong(this,'Levitating — Dua Lipa')">
-                <div class="song-radio"></div>
-                <div class="song-txt">
-                  <div class="sname">Levitating</div>
-                  <div class="sartist">Dua Lipa</div>
-                </div>
-                <div class="song-badge">✓ Selected</div>
-              </div>
-              <div class="song-row" onclick="selectSong(this,'Good as Hell — Lizzo')">
-                <div class="song-radio"></div>
-                <div class="song-txt">
-                  <div class="sname">Good as Hell</div>
-                  <div class="sartist">Lizzo</div>
-                </div>
-                <div class="song-badge">✓ Selected</div>
-              </div>
-              <div class="song-row" onclick="selectSong(this,'Blinding Lights — The Weeknd')">
-                <div class="song-radio"></div>
-                <div class="song-txt">
-                  <div class="sname">Blinding Lights</div>
-                  <div class="sartist">The Weeknd</div>
-                </div>
-                <div class="song-badge">✓ Selected</div>
-              </div>
-              <div class="song-row" onclick="selectSong(this,'As It Was — Harry Styles')">
-                <div class="song-radio"></div>
-                <div class="song-txt">
-                  <div class="sname">As It Was</div>
-                  <div class="sartist">Harry Styles</div>
-                </div>
-                <div class="song-badge">✓ Selected</div>
-              </div>
-              <div class="song-row" onclick="selectSong(this,'Espresso — Sabrina Carpenter')">
-                <div class="song-radio"></div>
-                <div class="song-txt">
-                  <div class="sname">Espresso</div>
-                  <div class="sartist">Sabrina Carpenter</div>
-                </div>
-                <div class="song-badge">✓ Selected</div>
-              </div>
-            </div>
-
+            <div class="card-title">🔔 Alarm Sound</div>
+            <div class="page-sub" style="margin-bottom:14px">Pick a tone, or upload your own MP3.</div>
+            <div class="sound-section-label">Built-in sounds</div>
+            <div id="sound-list" class="sound-list"></div>
+            <div class="sound-section-label" style="margin-top:18px">📁 Upload MP3</div>
             <div class="upload-zone" id="upload-zone" onclick="document.getElementById('mp3-input').click()">
               <div class="upload-icon">🎵</div>
-              <div class="upload-text">Upload your own MP3</div>
-              <div class="upload-sub">Tap to choose from your device</div>
+              <div class="upload-text">Choose an MP3 from your device</div>
+              <div class="upload-sub">Tap to browse</div>
             </div>
             <input type="file" id="mp3-input" accept="audio/mp3,audio/*" style="display:none"
               onchange="handleUpload(event)">
+            <div class="sound-section-label" style="margin-top:18px">🎵 Spotify <span class="coming-soon-badge">Coming
+                soon</span></div>
+            <div class="spotify-card">
+              <div class="spotify-logo">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="#1DB954">
+                  <path
+                    d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
+                </svg>
+                Spotify
+              </div>
+              <div class="spotify-desc">Wake up to your favorite music. Spotify integration coming in a future update.
+              </div>
+            </div>
+            <div class="current-sound-label">Playing when alarm fires: <strong id="alarm-song-label">🔔 Morning
+                Bells</strong></div>
           </div>
 
-          <button class="btn btn-primary" onclick="confirmPlan()">Confirm morning plan →</button>
+          <div class="card">
+            <div class="card-title">💥 Dismiss Style</div>
+            <div class="page-sub" style="margin-bottom:16px">How do you want to turn off your alarm?</div>
+            <div class="dismiss-options" id="dismiss-options">
+              <div class="dismiss-option active" data-mode="normal" onclick="setDismissMode('normal',this)">
+                <div class="dismiss-icon">👆</div>
+                <div class="dismiss-label">Tap dismiss</div>
+                <div class="dismiss-desc">Simple &amp; classic</div>
+              </div>
+              <div class="dismiss-option" data-mode="math" onclick="setDismissMode('math',this)">
+                <div class="dismiss-icon">🧮</div>
+                <div class="dismiss-label">Math problem</div>
+                <div class="dismiss-desc">Wake your brain</div>
+              </div>
+              <div class="dismiss-option" data-mode="shake" onclick="setDismissMode('shake',this)">
+                <div class="dismiss-icon">📳</div>
+                <div class="dismiss-label">Shake phone</div>
+                <div class="dismiss-desc">Get moving</div>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary" onclick="confirmPlan()">✅ Confirm morning plan →</button>
           <button class="btn btn-secondary" onclick="showTab('alarm')">Preview alarm</button>
         </div>
 
-        <!-- ══ WEATHER ══ -->
+        <!-- WEATHER -->
         <div class="screen" id="s-weather">
           <div class="page-title">Today's <em>weather</em></div>
-          <div class="page-sub">Live forecast for Ruston, Louisiana.</div>
-
-          <div class="weather-hero" id="weather-hero">
-            <div class="wh-city">Ruston, Louisiana</div>
-            <div class="wh-icon">⛅</div>
-            <div class="wh-temp">—<sup>°F</sup></div>
-            <div class="wh-desc">Loading...</div>
+          <div class="weather-location-row">
+            <div class="page-sub" id="weather-location-label">Ruston, Louisiana</div>
+            <button class="location-change-btn" onclick="toggleLocationSearch()">Change</button>
           </div>
-
+          <div class="location-search-box" id="location-search-box" style="display:none">
+            <input class="field" type="text" id="city-input" placeholder="Enter city name..."
+              onkeydown="if(event.key==='Enter')searchCity()">
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button class="btn btn-primary btn-sm" onclick="searchCity()">Search</button>
+              <button class="btn btn-secondary btn-sm" onclick="detectLocation()">📍 Use GPS</button>
+            </div>
+          </div>
+          <div class="weather-hero" id="weather-hero">
+            <div class="wh-city" id="wh-city">Ruston, Louisiana</div>
+            <div class="wh-icon" id="wh-icon">⛅</div>
+            <div class="wh-temp" id="wh-temp">—<sup>°F</sup></div>
+            <div class="wh-desc" id="wh-desc">Loading...</div>
+            <div class="wh-feels" id="wh-feels"></div>
+          </div>
           <div class="wh-stats-row" id="weather-stats-row">
             <div class="wh-stat-card">
               <div class="wh-stat-icon">🌡</div>
-              <div class="wh-stat-val">—</div>
+              <div class="wh-stat-val" id="wh-hi">—</div>
               <div class="wh-stat-lbl">High</div>
             </div>
             <div class="wh-stat-card">
               <div class="wh-stat-icon">🌬</div>
-              <div class="wh-stat-val">—</div>
+              <div class="wh-stat-val" id="wh-lo">—</div>
               <div class="wh-stat-lbl">Low</div>
             </div>
             <div class="wh-stat-card">
               <div class="wh-stat-icon">💧</div>
-              <div class="wh-stat-val">—</div>
+              <div class="wh-stat-val" id="wh-hum">—</div>
               <div class="wh-stat-lbl">Humidity</div>
             </div>
           </div>
-
-          <div class="card-title" style="margin-bottom:8px;">7-Day Forecast</div>
-          <div class="forecast-list" id="forecast-list">
-            <div class="forecast-row">
-              <div class="forecast-day">—</div>
-              <div class="forecast-icon">⛅</div>
-              <div class="forecast-desc">Loading...</div>
-              <div class="forecast-temp">—</div>
-            </div>
-          </div>
+          <div class="card-title" style="margin:20px 0 10px">7-Day Forecast</div>
+          <div class="forecast-list" id="forecast-list"></div>
         </div>
 
-        <!-- ══ ALARM (hidden tab, shown from schedule) ══ -->
+        <!-- ALARM -->
         <div class="screen" id="s-alarm">
           <div class="alarm-screen-wrap">
-            <div class="alarm-label">Alarm ringing</div>
-            <div class="alarm-song" id="alarm-song-label">Levitating — Dua Lipa</div>
+            <div class="alarm-label">Rise &amp; shine ☀</div>
+            <div class="alarm-song" id="alarm-song-label">🔔 Morning Bells</div>
             <div class="ring-container">
               <svg class="ring-svg" viewBox="0 0 200 200">
                 <circle class="ring-track" cx="100" cy="100" r="85" />
@@ -262,118 +259,157 @@
             <div class="vol-bars" id="vol-bars">
               <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
             </div>
-            <div class="alarm-actions">
+
+            <div id="dismiss-normal" class="alarm-actions">
               <button class="btn btn-danger" onclick="dismissAlarm(false)">Dismiss</button>
-              <button class="btn btn-secondary" onclick="dismissAlarm(true)">Snooze</button>
+              <button class="btn btn-secondary" onclick="dismissAlarm(true)">Snooze 5 min</button>
+            </div>
+
+            <div id="dismiss-math" class="alarm-math" style="display:none">
+              <div class="math-label">Solve to dismiss:</div>
+              <div class="math-problem" id="math-problem">12 + 7 = ?</div>
+              <input class="field math-input" type="number" id="math-answer" placeholder="Answer...">
+              <button class="btn btn-danger" onclick="checkMath()">Submit →</button>
+              <button class="btn btn-secondary" style="margin-top:8px" onclick="dismissAlarm(true)">Snooze
+                instead</button>
+            </div>
+
+            <div id="dismiss-shake" class="alarm-shake" style="display:none">
+              <div class="shake-icon">📳</div>
+              <div class="shake-label">Shake your phone to dismiss!</div>
+              <div class="shake-count" id="shake-count">0 / 10 shakes</div>
+              <button class="btn btn-secondary" style="margin-top:16px" onclick="dismissAlarm(true)">Snooze
+                instead</button>
             </div>
           </div>
         </div>
 
-        <!-- ══ SUMMARY ══ -->
+        <!-- SUMMARY -->
         <div class="screen" id="s-summary">
           <div class="page-title" id="sum-title">Great <em>start.</em></div>
           <div class="page-sub">Coffee is brewing. You've got this.</div>
-          <div class="spacer"></div>
+          <div style="height:28px"></div>
           <div id="sum-note" class="info-green">No snooze today — keep it up!</div>
-          <div class="spacer"></div>
+          <div style="height:28px"></div>
           <button class="btn btn-primary" onclick="showTab('home')">Back to home →</button>
           <button class="btn btn-secondary" onclick="showTab('schedule')">Edit tomorrow's plan</button>
         </div>
 
-        <!-- ══ CALENDAR ══ -->
+        <!-- CALENDAR -->
         <div class="screen" id="s-calendar">
           <div class="page-title">Your <em>calendar</em></div>
-          <div class="page-sub">Track tasks and events for each day.</div>
-
-          <div class="card">
+          <div class="card cal-card">
             <div class="cal-month">
               <button class="cal-nav" onclick="prevMonth()">‹</button>
-              <div class="cal-month-label" id="cal-month-label">April 2026</div>
+              <div class="cal-month-label" id="cal-month-label">May 2026</div>
               <button class="cal-nav" onclick="nextMonth()">›</button>
             </div>
-            <div class="cal-grid">
-              <div class="cal-dow">Sun</div>
-              <div class="cal-dow">Mon</div>
-              <div class="cal-dow">Tue</div>
-              <div class="cal-dow">Wed</div>
-              <div class="cal-dow">Thu</div>
-              <div class="cal-dow">Fri</div>
-              <div class="cal-dow">Sat</div>
+            <div class="cal-grid cal-header-grid">
+              <div class="cal-dow">Su</div>
+              <div class="cal-dow">Mo</div>
+              <div class="cal-dow">Tu</div>
+              <div class="cal-dow">We</div>
+              <div class="cal-dow">Th</div>
+              <div class="cal-dow">Fr</div>
+              <div class="cal-dow">Sa</div>
             </div>
             <div class="cal-grid" id="cal-grid"></div>
           </div>
-
           <div class="card">
-            <div class="card-title" id="task-day-label">Tasks for selected day</div>
+            <div class="card-title" id="task-day-label">Tasks for today</div>
             <div class="task-input-row">
               <input class="field" type="text" id="task-input" placeholder="Add a task...">
               <button class="btn btn-primary btn-sm" onclick="addTask()">Add</button>
             </div>
             <div class="task-list" id="task-list">
               <div class="empty-state">
-                <div class="empty-icon">📋</div>No tasks yet. Add one above!
+                <div class="empty-icon">📋</div>No tasks yet.
               </div>
             </div>
           </div>
         </div>
 
-        <!-- ══ SETTINGS ══ -->
+        <!-- SETTINGS -->
         <div class="screen" id="s-settings">
           <div class="page-title">Settings &amp; <em>themes</em></div>
-          <div class="page-sub">Make MorningMind yours.</div>
-
-          <div class="settings-section">
-            <div class="settings-lbl">App theme</div>
+          <div class="card">
+            <div class="card-title">🎨 App Theme</div>
             <div class="theme-grid">
               <div class="theme-tile active" onclick="setTheme('',this)">
                 <div class="theme-swatch" style="background:linear-gradient(135deg,#0c0906,#c8844a)"></div>
                 <div class="theme-name">Espresso</div>
               </div>
-              <div class="theme-tile" onclick="setTheme('purple',this)">
-                <div class="theme-swatch" style="background:linear-gradient(135deg,#0a0814,#9060e0)"></div>
-                <div class="theme-name">Purple</div>
-              </div>
-              <div class="theme-tile" onclick="setTheme('pink',this)">
-                <div class="theme-swatch" style="background:linear-gradient(135deg,#120808,#d06080)"></div>
-                <div class="theme-name">Rose</div>
-              </div>
-              <div class="theme-tile" onclick="setTheme('brown',this)">
-                <div class="theme-swatch" style="background:linear-gradient(135deg,#0e0a06,#b87838)"></div>
-                <div class="theme-name">Cocoa</div>
-              </div>
-              <div class="theme-tile" onclick="setTheme('nightsky',this)">
-                <div class="theme-swatch" style="background:linear-gradient(135deg,#04060e,#6888e8)"></div>
-                <div class="theme-name">Night Sky</div>
-              </div>
-              <div class="theme-tile" onclick="setTheme('forest',this)">
-                <div class="theme-swatch" style="background:linear-gradient(135deg,#060c06,#70c848)"></div>
-                <div class="theme-name">Forest</div>
-              </div>
               <div class="theme-tile" onclick="setTheme('light',this)">
                 <div class="theme-swatch" style="background:linear-gradient(135deg,#f5f0e8,#a05e20)"></div>
                 <div class="theme-name">Light</div>
               </div>
+              <div class="theme-tile" onclick="setTheme('sunrise',this)">
+                <div class="theme-swatch" style="background:linear-gradient(135deg,#8B1A1A,#F0A500)"></div>
+                <div class="theme-name">Sunrise</div>
+              </div>
+              <div class="theme-tile" onclick="setTheme('bloom',this)">
+                <div class="theme-swatch" style="background:linear-gradient(135deg,#1A2740,#8BAED4)"></div>
+                <div class="theme-name">Blue Bloom</div>
+              </div>
+              <div class="theme-tile" onclick="setTheme('lotus',this)">
+                <div class="theme-swatch" style="background:linear-gradient(135deg,#6B1F3A,#F4A7C0)"></div>
+                <div class="theme-name">Lotus</div>
+              </div>
+              <div class="theme-tile" onclick="setTheme('starnight',this)">
+                <div class="theme-swatch" style="background:linear-gradient(135deg,#0D1B3E,#243070)"></div>
+                <div class="theme-name">Starnight</div>
+              </div>
+              <div class="theme-tile" onclick="setTheme('mocha',this)">
+                <div class="theme-swatch" style="background:linear-gradient(135deg,#2A1506,#C4894A)"></div>
+                <div class="theme-name">Mocha</div>
+              </div>
+              <div class="theme-tile" onclick="setTheme('forest',this)">
+                <div class="theme-swatch" style="background:linear-gradient(135deg,#0A1E0E,#1C3E22)"></div>
+                <div class="theme-name">Forest</div>
+              </div>
+              <div class="theme-tile" onclick="setTheme('terra',this)">
+                <div class="theme-swatch" style="background:linear-gradient(135deg,#7A3B1E,#C06A38)"></div>
+                <div class="theme-name">Terra</div>
+              </div>
+              <div class="theme-tile" onclick="setTheme('honey',this)">
+                <div class="theme-swatch" style="background:linear-gradient(135deg,#C8A800,#F5D800)"></div>
+                <div class="theme-name">Honey</div>
+              </div>
+              <div class="theme-tile" onclick="setTheme('sage',this)">
+                <div class="theme-swatch" style="background:linear-gradient(135deg,#EAF0E6,#C5D8BB)"></div>
+                <div class="theme-name">Sage</div>
+              </div>
             </div>
           </div>
-
-          <div class="settings-section">
-            <div class="settings-lbl">About</div>
+          <div class="card">
+            <div class="card-title">🥧 Pi Connection</div>
+            <div class="settings-card">
+              <div class="settings-row"><span class="settings-row-label">Pi IP Address</span><input
+                  class="field field-inline" type="text" id="pi-ip-input" placeholder="192.168.1.100"
+                  value="192.168.1.100" oninput="updatePiIP()"></div>
+              <div class="settings-row"><span class="settings-row-label">Port</span><span
+                  class="settings-row-val">5000</span></div>
+            </div>
+            <button class="btn btn-secondary btn-sm" style="margin-top:10px" onclick="testPiConnection()">Test Pi
+              Connection</button>
+            <div class="pi-status" id="pi-status"></div>
+          </div>
+          <div class="card">
+            <div class="card-title">ℹ️ About</div>
             <div class="settings-card">
               <div class="settings-row"><span class="settings-row-label">Project</span><span
                   class="settings-row-val">MorningMind</span></div>
               <div class="settings-row"><span class="settings-row-label">Version</span><span
-                  class="settings-row-val">2.0.0</span></div>
+                  class="settings-row-val">4.0.0</span></div>
               <div class="settings-row"><span class="settings-row-label">Platform</span><span
                   class="settings-row-val">Raspberry Pi + Web</span></div>
-              <div class="settings-row"><span class="settings-row-label">University</span><span
+              <div class="settings-row"><span class="settings-row-label">Course</span><span
                   class="settings-row-val">Louisiana Tech · CSC 132</span></div>
             </div>
           </div>
         </div>
 
-      </div><!-- content inner -->
-
-      <!-- BOTTOM NAV -->
+      </div>
       <nav class="bottomnav">
         <button class="nav-btn active" id="nav-home" onclick="showTab('home')">
           <div class="nav-icon">🏠</div>
@@ -416,9 +452,9 @@
         <div class="ctrl-group">
           <div class="ctrl-lbl">Minute</div>
           <div class="ctrl-row">
-            <button class="ctrl-btn" onclick="adjM(-15)">−</button>
+            <button class="ctrl-btn" onclick="adjM(-1)">−</button>
             <div class="ctrl-val" id="cm-m">00</div>
-            <button class="ctrl-btn" onclick="adjM(15)">+</button>
+            <button class="ctrl-btn" onclick="adjM(1)">+</button>
           </div>
         </div>
         <div class="ctrl-group">
@@ -428,10 +464,12 @@
           </div>
         </div>
       </div>
-      <button class="btn btn-primary" onclick="confirmClock()">Confirm time</button>
+      <button class="btn btn-primary" onclick="confirmClock()">Set time</button>
     </div>
   </div>
 
+  <div class="toast" id="toast"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
   <script src="app.js"></script>
 </body>
 
