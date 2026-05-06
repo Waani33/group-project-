@@ -1,7 +1,7 @@
 
 
 // ── PI CONFIG ──
-var PI_IP = '192.168.1.100';
+var PI_IP = '127.0.0.1';
 var PI_PORT = '5000';
 
 function piTrigger(endpoint, data) {
@@ -9,9 +9,14 @@ function piTrigger(endpoint, data) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data || {})
-  }).catch(function (e) { console.log('Pi offline (ok in dev):', e.message); });
+  })
+    .then(function () {
+      console.log('Coffee server reached');
+    })
+    .catch(function (e) {
+      console.log('Coffee server offline:', e.message);
+    });
 }
-
 // ── ALARM SOUNDS (via Howler.js) ──
 // Free sounds from mixkit.co embedded as URLs
 var ALARM_SOUNDS = [
@@ -238,12 +243,13 @@ function startAlarmChecker() {
     var nowMins = now.getHours() * 60 + now.getMinutes();
 
     // coffee — fire once
-    if (!state.noCoffee && state.coffeeTotalMins > 0 &&
-      nowMins === state.coffeeTotalMins && !state.coffeeFired) {
-      state.coffeeFired = true;
-      piTrigger('/coffee/start', { time: state.coffeeTime });
-      showToast('☕ Coffee signal sent to Pi!');
-    }
+   if (!state.noCoffee && state.coffeeTotalMins > 0 &&
+  nowMins === state.coffeeTotalMins && !state.coffeeFired) {
+
+  state.coffeeFired = true;
+  piTrigger('/coffee/start', { time: state.coffeeTime });
+  showToast('☕ Coffee signal sent!');
+  }
     // reset coffee flag when minute changes
     if (state.coffeeFired && nowMins !== state.coffeeTotalMins) state.coffeeFired = false;
 
@@ -510,10 +516,16 @@ function updateBuffer() {
   updatePlanPreview();
 }
 
+
 function updateCoffeeOffset() {
   var v = parseInt(document.getElementById('ev-coffee').value) || 10;
   state.coffeeOffsetMins = Math.max(1, Math.min(v, 120));
   updatePlanPreview();
+}
+
+function startCoffeeNow() {
+  piTrigger('/coffee/start', {});
+  showToast('☕ Coffee bot running!');
 }
 
 function updatePlanPreview() {
