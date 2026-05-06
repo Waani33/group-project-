@@ -1,0 +1,18 @@
+{
+  "name": "MorningMind",
+  "short_name": "MorningMind",
+  "description": "Your context-aware morning automation system",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#100c08",
+  "theme_color": "#e09050",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
